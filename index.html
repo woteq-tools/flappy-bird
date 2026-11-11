@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#38bdf8" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="Flappy Bird clone — tap to flap, dodge the pipes, grab coins and chase your high score. Installable offline Android PWA by Woteq Tools." />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Flappy Bird — Woteq Games</title>
+
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/favicon.png" sizes="64x64" type="image/png" />
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div id="app">
+  <div id="stage">
+
+    <canvas id="game" aria-label="Flappy Bird game area" role="img"></canvas>
+
+    <!-- ─────────────  HUD  ───────────── -->
+    <div id="hud" class="hud">
+      <div class="hud-group">
+        <button id="soundBtn" class="icon-btn" type="button" aria-label="Toggle sound" title="Toggle sound">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M17 9.5l5 5m0-5l-5 5" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button id="pauseBtn" class="icon-btn" type="button" aria-label="Pause game" title="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.4"/><rect x="13.5" y="5" width="4" height="14" rx="1.4"/></svg>
+        </button>
+      </div>
+      <div class="hud-group hud-right">
+        <div class="chip chip-coin" title="Coins collected">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle class="hole" cx="12" cy="12" r="4.2"/></svg>
+          <span id="coinCount">0</span>
+        </div>
+        <div class="chip" title="Best score">
+          <span class="chip-label">Best</span><span id="bestCount">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────  START  ───────────── -->
+    <section id="startOverlay" class="overlay">
+      <div class="card">
+        <h1 class="logo"><span>FLAPPY</span><em>BIRD</em></h1>
+        <p class="tagline">Tap to flap. Don't touch the pipes.</p>
+
+        <div class="stats">
+          <div class="stat"><span class="stat-value" id="startBest">0</span><span class="stat-label">Best</span></div>
+          <div class="stat"><span class="stat-value" id="startCoins">0</span><span class="stat-label">Coins</span></div>
+          <div class="stat"><span class="stat-value" id="startGames">0</span><span class="stat-label">Games</span></div>
+        </div>
+
+        <button id="playBtn" class="btn btn-primary btn-lg" type="button">Play</button>
+
+        <ul class="hints">
+          <li><b>Tap</b> the screen or press <kbd>Space</kbd> to flap</li>
+          <li>Steer through the gaps — <b>don't touch the pipes</b></li>
+          <li>Grab the <span class="coin-word">gold coins</span> for bonus points</li>
+        </ul>
+
+        <button id="installBtn" class="btn btn-ghost" type="button" hidden>📲 Install app</button>
+        <p class="foot">Made by <a href="https://woteq-tools.github.io/" target="_blank" rel="noopener">Woteq Tools</a> · works offline</p>
+      </div>
+    </section>
+
+    <!-- ─────────────  PAUSE  ───────────── -->
+    <section id="pauseOverlay" class="overlay" hidden>
+      <div class="card card-sm">
+        <h2 class="card-title">Paused</h2>
+        <button id="resumeBtn" class="btn btn-primary" type="button">Resume</button>
+        <button id="quitBtn" class="btn btn-ghost" type="button">Quit to menu</button>
+      </div>
+    </section>
+
+    <!-- ─────────────  GAME OVER  ───────────── -->
+    <section id="overOverlay" class="overlay" hidden>
+      <div class="card">
+        <h2 class="card-title" id="overTitle">Game Over</h2>
+        <div class="badge" id="newBestBadge" hidden>🏆 New Best!</div>
+
+        <div class="stats stats-3">
+          <div class="stat"><span class="stat-value" id="overScore">0</span><span class="stat-label">Score</span></div>
+          <div class="stat"><span class="stat-value" id="overBest">0</span><span class="stat-label">Best</span></div>
+          <div class="stat"><span class="stat-value" id="overCoins">0</span><span class="stat-label">Coins</span></div>
+        </div>
+
+        <button id="retryBtn" class="btn btn-primary btn-lg" type="button">Retry</button>
+        <button id="homeBtn" class="btn btn-ghost" type="button">Main menu</button>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
