@@ -110,6 +110,7 @@ export class FlappyGame {
   reset() {
     this.score = 0;
     this.sessionCoins = 0;
+    this.totalCoins = Storage.get('coins') || 0;
     this.pipes = [];
     this.particles = [];
     this.floaters = [];
@@ -303,11 +304,27 @@ export class FlappyGame {
   }
 
   updateBackground(dt) {
-    const slow = this.state === 'playing' ? 1 : 0.45;
-    this.scrollX += CFG.cloudSpeed * this.speed * 0.1 * slow * dt;
+    // The world scroll drives the ground, the hills and the pipe speed, so it
+    // must advance at exactly the same rate as the pipes — otherwise the
+    // ground slides out from under them.
+    let worldSpeed;
+    switch (this.state) {
+      case 'playing':
+        worldSpeed = this.speed;
+        break;
+      case 'ready':
+        worldSpeed = this.speed * 0.45;
+        break;
+      case 'over':
+        worldSpeed = this.speed * 0.25;
+        break;
+      default:
+        worldSpeed = 0; // dying / paused → freeze the world
+    }
+    this.scrollX += worldSpeed * dt;
 
     for (const cloud of this.clouds) {
-      cloud.x -= CFG.cloudSpeed * cloud.speed * slow * dt;
+      cloud.x -= CFG.cloudSpeed * cloud.speed * dt;
       if (cloud.x < -cloud.r * 2.4) {
         cloud.x = VIEW_W + cloud.r * 2;
         cloud.y = rand(40, this.viewH * 0.5);
@@ -318,7 +335,6 @@ export class FlappyGame {
 
   updatePipes(dt) {
     const speed = this.speed;
-    this.scrollX += speed * dt;
 
     for (const pipe of this.pipes) pipe.x -= speed * dt;
 
@@ -360,10 +376,11 @@ export class FlappyGame {
         if (dx * dx + dy * dy < (CFG.birdR + 11) ** 2) {
           pipe.coin.taken = true;
           this.sessionCoins++;
+          this.totalCoins++;
           this.audio.coin();
           this.floaters.push({ x: cx, y: pipe.coin.y, life: 0.9, text: '+1' });
           this.spawnBurst(cx, pipe.coin.y, 12, C.coin);
-          this.emit('coin', this.sessionCoins);
+          this.emit('coin', this.totalCoins);
         }
       }
     }
@@ -422,7 +439,7 @@ export class FlappyGame {
     const best = Storage.get('best') || 0;
     const isBest = this.score > best;
     if (isBest) Storage.set('best', this.score);
-    const totalCoins = Storage.add('coins', this.sessionCoins);
+    const totalCoins = Storage.set('coins', this.totalCoins);
     Storage.add('games', 1);
     this.emit('over', {
       score: this.score,

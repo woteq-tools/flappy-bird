@@ -60,7 +60,7 @@ const game = new FlappyGame(canvas, {
         break;
 
       case 'coin':
-        ui.coinCount.textContent = Storage.get('coins') || 0;
+        ui.coinCount.textContent = payload;
         break;
 
       case 'over':
