@@ -120,6 +120,7 @@ export class FlappyGame {
     this.nextPipeX = VIEW_W + 90;
     this.dying = false;
     this.flash = 0;
+    this.overAt = 0;
 
     for (let i = 0; i < 6; i++) {
       this.clouds.push({
@@ -204,6 +205,13 @@ export class FlappyGame {
   }
 
   restart() {
+    this.startRun();
+  }
+
+  /** Retry triggered by tapping the game-over card — ignores stray taps. */
+  retryFromOverlay() {
+    if (this.state !== 'over') return;
+    if (performance.now() - this.overAt < 450) return;
     this.startRun();
   }
 
@@ -409,6 +417,7 @@ export class FlappyGame {
 
   gameOver() {
     this.state = 'over';
+    this.overAt = performance.now();
     this.audio.gameOver();
     const best = Storage.get('best') || 0;
     const isBest = this.score > best;

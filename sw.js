@@ -10,7 +10,7 @@
  * The whole game is a handful of small text files, so the cache stays tiny.
  */
 
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.0.1';
 const SHELL_CACHE = `flappy-shell-${VERSION}`;
 
 const SHELL_ASSETS = [

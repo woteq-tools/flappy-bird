@@ -42,6 +42,8 @@ let toastTimer = 0;
 function toast(message, ms = 2600) {
   ui.toast.textContent = message;
   ui.toast.hidden = false;
+  ui.toast.onclick = null;
+  ui.toast.style.cursor = '';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     ui.toast.hidden = true;
@@ -124,7 +126,7 @@ ui.start.addEventListener('pointerdown', (event) => {
 });
 ui.over.addEventListener('pointerdown', (event) => {
   if (event.target.closest('button')) return;
-  game.restart();
+  game.retryFromOverlay();
 });
 ui.pause.addEventListener('pointerdown', (event) => {
   if (event.target.closest('button')) return;
@@ -257,6 +259,11 @@ window.__game = game;
 ui.bestCount.textContent = Storage.get('best') || 0;
 ui.coinCount.textContent = Storage.get('coins') || 0;
 applyState('ready');
+
+// Manifest shortcut: index.html?play=1 drops straight into a run.
+if (new URLSearchParams(location.search).get('play') === '1') {
+  setTimeout(() => game.startRun(), 150);
+}
 
 // iOS Safari has no install prompt — point people at the share sheet.
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
